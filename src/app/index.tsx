@@ -1,11 +1,23 @@
-import { Container, Card, CssBaseline, Typography } from '@mui/material';
-import { grey } from '@mui/material/colors';
+import { Container, Card, Typography, IconButton } from '@mui/material';
+import {
+  Brightness4 as Brightness4Icon,
+  Brightness7 as Brightness7Icon,
+} from '@mui/icons-material';
 import TaskList from '../components/TaskList';
+import { ThemeProvider, useThemeContext } from './ThemeContext';
 
-function App() {
+const AppContent = () => {
+  const { darkMode, toggleDarkMode } = useThemeContext();
+
   return (
-    <>
-      <CssBaseline />
+    <div>
+      <IconButton
+        aria-label="toggle dark mode"
+        onClick={toggleDarkMode}
+        sx={{ position: 'absolute', top: 16, right: 16 }}
+      >
+        {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
+      </IconButton>
       <Container
         maxWidth="sm"
         disableGutters
@@ -13,6 +25,7 @@ function App() {
           display: 'flex',
           justifyContent: 'center',
           flexDirection: 'column',
+          position: 'relative',
         }}
       >
         <Card sx={{ p: 4 }}>
@@ -20,7 +33,15 @@ function App() {
         </Card>
         <TaskList />
       </Container>
-    </>
+    </div>
+  );
+};
+
+function App() {
+  return (
+    <ThemeProvider>
+      <AppContent />
+    </ThemeProvider>
   );
 }
 

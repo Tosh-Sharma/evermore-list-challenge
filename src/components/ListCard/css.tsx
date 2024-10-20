@@ -1,26 +1,20 @@
 import { css } from '@emotion/react';
-import styled from '@emotion/styled';
-import { Card } from '@mui/material';
+import { red, orange, yellow } from '@mui/material/colors';
 
 export const IconPriority = {
   highest: css`
-    color: #ff0000; /* Bright red */
+    color: ${red[500]}; /* Bright red */
   `,
   high: css`
-    color: #ff4d4d; /* Slightly less bright red */
+    color: ${red[300]}; /* Slightly less bright red */
   `,
   medium: css`
-    color: #ffa500; /* Orange */
+    color: ${orange[500]}; /* Orange */
   `,
   low: css`
-    color: #ffcc00; /* Yellowish orange */
+    color: ${yellow[700]}; /* Yellowish orange */
   `,
   lowest: css`
-    color: #ffeb99; /* Light yellowish orange */
+    color: ${yellow[300]}; /* Light yellowish orange */
   `,
 };
-
-export const CardContainer = styled(Card)`
-  margin: 16px;
-  padding: 16px;
-`;
