@@ -16,7 +16,7 @@ const AppContent = () => {
   const handleClose = () => setModalOpen(false);
   const { darkMode, toggleDarkMode } = useThemeContext();
 
-  const iconButtonStyle = css`
+  const themeButtonStyle = css`
     position: absolute;
     top: 16px;
     right: 16px;
@@ -42,13 +42,13 @@ const AppContent = () => {
 
   return (
     <div>
-      <IconButton aria-label="toggle dark mode" onClick={toggleDarkMode} sx={iconButtonStyle}>
+      <IconButton aria-label="toggle dark mode" onClick={toggleDarkMode} sx={themeButtonStyle}>
         {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
       </IconButton>
       <Container sx={containerStyle}>
         <Card sx={cardStyle}>
           <Typography variant="subtitle1">Tosh's ToDo Lists</Typography>
-          <IconButton aria-label="create new task" onClick={handleOpen}>
+          <IconButton aria-label="Add new task" onClick={handleOpen}>
             <Button variant="contained" color="primary">
               Add New Task
             </Button>
