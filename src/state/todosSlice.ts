@@ -2,7 +2,7 @@ import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
 import type { RootState } from './store';
 
-const initialState: any = {};
+const initialState: unknown = {};
 
 const todosSlice = createSlice({
   name: 'todos',
@@ -14,7 +14,7 @@ const todosSlice = createSlice({
   },
 });
 
-export const {} = todosSlice.actions;
+export const actions = todosSlice.actions;
 export const selectTest = (state: RootState) => undefined;
 
 export default todosSlice.reducer;
