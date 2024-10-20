@@ -3,8 +3,10 @@ import todoList from '../app/todoList';
 import ListCard from './ListCard';
 
 const TaskList: React.FC = () => {
+  const allTasksDone = 'All tasks are Done!';
   return (
     <div>
+      {todoList.length === 0 && <p>{allTasksDone}</p>}
       {todoList.map((task) => (
         <ListCard
           key={task.id}

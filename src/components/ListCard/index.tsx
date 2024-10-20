@@ -1,20 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { css } from '@emotion/react';
 import styled from '@emotion/styled';
-import { Card, CardContent, Typography, IconButton, Tooltip } from '@mui/material';
-import {
-  KeyboardArrowUp as HighPriority,
-  KeyboardDoubleArrowUp as HighestPriority,
-  DensityLarge as MediumPriority,
-  KeyboardArrowDown as LowPriority,
-  KeyboardDoubleArrowDown as LowestPriority,
-  Edit as EditIcon,
-  Delete as DeleteIcon,
-} from '@mui/icons-material';
+import { Card, CardContent, Typography, IconButton, Tooltip, Button } from '@mui/material';
+import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 import { Priority, State } from '../../constants/constants';
-import { IconPriority } from './css';
 import { useThemeContext } from '../../app/ThemeContext';
+import { priorityIcons } from '../PriorityIcons';
+import TaskModal from '../CardCreation';
 
 interface ListCardProps {
   name: string;
@@ -23,29 +16,21 @@ interface ListCardProps {
   state: State;
 }
 
-const priorityIcons = {
-  Lowest: <LowestPriority sx={IconPriority.lowest} />,
-  Low: <LowPriority sx={IconPriority.low} />,
-  Medium: <MediumPriority sx={IconPriority.medium} />,
-  High: <HighPriority sx={IconPriority.high} />,
-  Highest: <HighestPriority sx={IconPriority.highest} />,
-};
-
 const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state }) => {
-  const { darkMode } = useThemeContext();
+  const [modalOpen, setModalOpen] = useState(false);
 
-  const handleEditClick = () => {
-    // Handle edit logic here
-  };
+  const handleEditClick = () => setModalOpen(true);
+  const handleClose = () => setModalOpen(false);
+  const { darkMode } = useThemeContext();
 
   const handleDeleteClick = () => {
     // Handle delete logic here
   };
 
   const cardContainerStyle = css`
-    margin: 16px;
-    padding: 16px;
-    min-width: 300px;
+    margin: 5px;
+    padding: 5px;
+    min-width: 150px;
     position: relative;
     box-shadow: ${darkMode
       ? '0px 4px 20px rgba(124, 124, 124, 0.1)'
@@ -61,6 +46,12 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state 
   const Name = styled.div`
     display: flex;
     align-items: center;
+  `;
+
+  const State = styled.div`
+    display: flex;
+    align-items: center;
+    flex-direction: row;
   `;
 
   return (
@@ -82,9 +73,12 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state 
         <Typography variant="body2" color="text.secondary">
           {description}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
-          State: {state}
-        </Typography>
+        <State>
+          <Typography variant="body2" color="text.secondary">
+            State
+          </Typography>
+          <Button variant="text">{state}</Button>
+        </State>
       </CardContent>
       <IconButton
         aria-label="delete"
@@ -97,6 +91,17 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state 
       >
         <DeleteIcon />
       </IconButton>
+      <TaskModal
+        mode="edit"
+        open={modalOpen}
+        handleClose={handleClose}
+        initialData={{
+          name,
+          description,
+          priority,
+          state,
+        }}
+      />
     </Card>
   );
 };

@@ -1,37 +1,61 @@
-import { Container, Card, Typography, IconButton } from '@mui/material';
+import { css } from '@emotion/react';
+import { Container, Card, Typography, IconButton, Button } from '@mui/material';
 import {
   Brightness4 as Brightness4Icon,
   Brightness7 as Brightness7Icon,
 } from '@mui/icons-material';
 import TaskList from '../components/TaskList';
 import { ThemeProvider, useThemeContext } from './ThemeContext';
+import TaskModal from '../components/CardCreation';
+import { useState } from 'react';
 
 const AppContent = () => {
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const handleOpen = () => setModalOpen(true);
+  const handleClose = () => setModalOpen(false);
   const { darkMode, toggleDarkMode } = useThemeContext();
+
+  const iconButtonStyle = css`
+    position: absolute;
+    top: 16px;
+    right: 16px;
+  `;
+
+  const containerStyle = css`
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 0;
+  `;
+
+  const cardStyle = css`
+    padding: 16px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  `;
 
   return (
     <div>
-      <IconButton
-        aria-label="toggle dark mode"
-        onClick={toggleDarkMode}
-        sx={{ position: 'absolute', top: 16, right: 16 }}
-      >
+      <IconButton aria-label="toggle dark mode" onClick={toggleDarkMode} sx={iconButtonStyle}>
         {darkMode ? <Brightness7Icon /> : <Brightness4Icon />}
       </IconButton>
-      <Container
-        maxWidth="sm"
-        disableGutters
-        sx={{
-          display: 'flex',
-          justifyContent: 'center',
-          flexDirection: 'column',
-          position: 'relative',
-        }}
-      >
-        <Card sx={{ p: 4 }}>
-          <Typography variant="subtitle2">Tosh's ToDo Lists</Typography>
+      <Container sx={containerStyle}>
+        <Card sx={cardStyle}>
+          <Typography variant="subtitle1">Tosh's ToDo Lists</Typography>
+          <IconButton aria-label="create new task" onClick={handleOpen}>
+            <Button variant="contained" color="primary">
+              Add New Task
+            </Button>
+          </IconButton>
         </Card>
         <TaskList />
+        <TaskModal mode="create" open={modalOpen} handleClose={handleClose} />
       </Container>
     </div>
   );
