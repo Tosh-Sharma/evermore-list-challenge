@@ -48,8 +48,9 @@ const TaskModal = ({ open, handleClose, mode, initialData }: TaskModalProps) => 
   };
 
   const iconButtonStyle = (selected: boolean) => css`
-    border: ${selected ? '2px solid #1976d2' : 'none'};
+    border: ${selected ? '2px solid #1976d2' : '2px solid rgba(0, 0, 0, 0.1)'};
     border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   `;
 
   return (

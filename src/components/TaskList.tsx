@@ -1,6 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { MenuItem, IconButton, Menu } from '@mui/material';
-import { Sort } from '@mui/icons-material';
+import {
+  MenuItem,
+  IconButton,
+  Menu,
+  Modal,
+  Box,
+  FormControlLabel,
+  Checkbox,
+  Button,
+} from '@mui/material';
+import { FilterAlt, Sort } from '@mui/icons-material';
 
 import todoList from '../app/todoList';
 import { Priority, priorityOrder, State } from '../constants/constants';
@@ -23,17 +32,32 @@ const TaskList: React.FC = () => {
     localStorage.setItem('sortMethod', method);
   };
 
+  const loadFilterChoices = () => {
+    const savedFilters = localStorage.getItem('filterChoices');
+    return savedFilters
+      ? JSON.parse(savedFilters)
+      : [State.ToDo, State.InProgress, State.Canceled, State.Blocked];
+  };
+
+  const saveFilterChoices = (choices: State[]) => {
+    localStorage.setItem('filterChoices', JSON.stringify(choices));
+  };
+
   const [sortMethod, setSortMethod] = useState(loadSortMethod());
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [filterModalOpen, setFilterModalOpen] = useState(false);
+  const [selectedStates, setSelectedStates] = useState<State[]>(loadFilterChoices());
   const open = Boolean(anchorEl);
 
   useEffect(() => {
     setSortMethod(loadSortMethod());
+    setSelectedStates(loadFilterChoices());
   }, []);
 
   const handleSortIconClick = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorEl(event.currentTarget);
   };
+
   const handleSortMenuClose = () => {
     setAnchorEl(null);
   };
@@ -44,8 +68,26 @@ const TaskList: React.FC = () => {
     setAnchorEl(null);
   };
 
+  const handleFilterIconClick = () => {
+    setFilterModalOpen(true);
+  };
+
+  const handleFilterModalClose = () => {
+    setFilterModalOpen(false);
+  };
+
+  const handleStateChange = (state: State) => {
+    setSelectedStates((prev) => {
+      const newStates = prev.includes(state) ? prev.filter((s) => s !== state) : [...prev, state];
+      saveFilterChoices(newStates);
+      return newStates;
+    });
+  };
+
   const allTasksDone = 'All tasks are Done!';
-  const filteredTasks = todoList.filter((task) => task.state !== State.Done);
+  const filteredTasks = todoList.filter(
+    (task) => selectedStates.length === 0 || selectedStates.includes(task.state)
+  );
 
   if (filteredTasks.length === 0) return <p>{allTasksDone}</p>;
 
@@ -100,7 +142,32 @@ const TaskList: React.FC = () => {
           <MenuItem onClick={() => handleMenuItemClick('nameAsc')}>Name Ascending</MenuItem>
           <MenuItem onClick={() => handleMenuItemClick('nameDesc')}>Name Descending</MenuItem>
         </Menu>
+        <IconButton onClick={handleFilterIconClick}>
+          <FilterAlt />
+        </IconButton>
       </div>
+      <Modal open={filterModalOpen} onClose={handleFilterModalClose}>
+        <Box
+          sx={{ p: 4, bgcolor: 'background.paper', margin: 'auto', width: 300, borderRadius: 2 }}
+        >
+          <h2>Filter by State</h2>
+          {Object.values(State).map((state) => (
+            <FormControlLabel
+              key={state}
+              control={
+                <Checkbox
+                  checked={selectedStates.includes(state)}
+                  onChange={() => handleStateChange(state)}
+                />
+              }
+              label={state}
+            />
+          ))}
+          <Button variant="contained" color="primary" onClick={handleFilterModalClose}>
+            Apply
+          </Button>
+        </Box>
+      </Modal>
       {sortedTasks.map((task) => (
         <ListCard
           key={task.id}

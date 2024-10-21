@@ -10,19 +10,19 @@ import {
 
 const IconPriority = {
   highest: css`
-    color: ${red[500]}; /* Bright red */
+    color: ${red[500]};
   `,
   high: css`
-    color: ${red[300]}; /* Slightly less bright red */
+    color: ${red[300]};
   `,
   medium: css`
-    color: ${orange[500]}; /* Orange */
+    color: ${orange[500]};
   `,
   low: css`
-    color: ${yellow[700]}; /* Yellowish orange */
+    color: ${yellow[700]};
   `,
   lowest: css`
-    color: ${yellow[300]}; /* Light yellowish orange */
+    color: #b2a300;
   `,
 };
 

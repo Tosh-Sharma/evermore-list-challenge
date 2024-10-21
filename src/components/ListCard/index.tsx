@@ -54,13 +54,22 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state 
     flex-direction: row;
   `;
 
+  const iconButtonStyle = css`
+    border: 0.5px solid lightgrey;
+    border-radius: 70%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-right: 15px;
+  `;
+
   return (
     <Card sx={cardContainerStyle}>
       <CardContent>
         <Header>
           <Name>
             <Tooltip title={priority}>
-              <IconButton aria-label="priority">{priorityIcons[priority]}</IconButton>
+              <IconButton aria-label="priority" sx={iconButtonStyle}>
+                {priorityIcons[priority]}
+              </IconButton>
             </Tooltip>
             <Typography variant="h5" component="div">
               {name}
