@@ -14,6 +14,7 @@ import { FilterAlt, Sort } from '@mui/icons-material';
 import todoList from '../app/todoList';
 import { Priority, priorityOrder, State } from '../constants/constants';
 import ListCard from './ListCard';
+import StateFilter from './StateFilter';
 
 interface ITask {
   id: number;
@@ -146,28 +147,12 @@ const TaskList: React.FC = () => {
           <FilterAlt />
         </IconButton>
       </div>
-      <Modal open={filterModalOpen} onClose={handleFilterModalClose}>
-        <Box
-          sx={{ p: 4, bgcolor: 'background.paper', margin: 'auto', width: 300, borderRadius: 2 }}
-        >
-          <h2>Filter by State</h2>
-          {Object.values(State).map((state) => (
-            <FormControlLabel
-              key={state}
-              control={
-                <Checkbox
-                  checked={selectedStates.includes(state)}
-                  onChange={() => handleStateChange(state)}
-                />
-              }
-              label={state}
-            />
-          ))}
-          <Button variant="contained" color="primary" onClick={handleFilterModalClose}>
-            Apply
-          </Button>
-        </Box>
-      </Modal>
+      <StateFilter
+        filterModalOpen={filterModalOpen}
+        handleFilterModalClose={handleFilterModalClose}
+        handleStateChange={handleStateChange}
+        selectedStates={selectedStates}
+      />
       {sortedTasks.map((task) => (
         <ListCard
           key={task.id}

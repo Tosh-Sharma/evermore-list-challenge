@@ -55,7 +55,20 @@ const TaskModal = ({ open, handleClose, mode, initialData }: TaskModalProps) => 
 
   return (
     <Modal open={open} onClose={handleClose}>
-      <Box sx={{ p: 4, bgcolor: 'background.paper', margin: 'auto', width: 400, borderRadius: 2 }}>
+      <Box
+        sx={{
+          p: 4,
+          bgcolor: 'background.paper',
+          display: 'flex',
+          flexDirection: 'column',
+          margin: 'auto',
+          width: 400,
+          borderRadius: 2,
+          paddingTop: 2,
+          marginTop: 10,
+          justifyContent: 'center',
+        }}
+      >
         <h2>{mode === 'create' ? 'Create New Task' : 'Edit Task'}</h2>
         <TextField
           label="Name"
@@ -123,7 +136,7 @@ const TaskModal = ({ open, handleClose, mode, initialData }: TaskModalProps) => 
           <Button variant="contained" color="primary" onClick={handleSubmit}>
             Submit
           </Button>
-          <Button variant="outlined" color="secondary" onClick={handleClose}>
+          <Button variant="outlined" onClick={handleClose}>
             Cancel
           </Button>
         </Box>

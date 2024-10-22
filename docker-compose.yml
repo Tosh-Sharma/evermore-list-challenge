@@ -1,0 +1,26 @@
+services:
+  db:
+    container_name: taskdb
+    image: postgres
+    restart: always
+    command: -c 'max_connections=500'
+    networks:
+      - db-adminer
+    environment:
+      POSTGRES_PASSWORD: hlcpw
+      POSTGRES_USER: tosh
+      POSTGRES_DB: tasktable
+      POSTGRES_HOST_AUTH_METHOD: trust
+    ports:
+      - 5432:5432
+    volumes:
+      - ./dumps:/dumps
+      - ./scripts:/scripts
+      - pg-data:/var/lib/postgresql/data
+
+networks:
+  db-adminer: {}
+
+volumes:
+  local_redis_data: {}
+  pg-data: {}

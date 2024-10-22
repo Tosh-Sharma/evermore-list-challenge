@@ -22,3 +22,41 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+backend-api/dist
+backend-api/node_modules
+
+# Backend-api folder
+
+# Logs
+backend-api/logs
+backend-api/*.log
+backend-api/npm-debug.log*
+backend-api/pnpm-debug.log*
+backend-api/yarn-debug.log*
+backend-api/yarn-error.log*
+backend-api/lerna-debug.log*
+
+# OS
+backend-api/.DS_Store
+backend-api/# Tests
+backend-api/coverage
+backend-api/.nyc_output
+
+# IDEs and editors
+backend-api//.idea
+backend-api/.project
+backend-api/.classpath
+backend-api/.c9/
+backend-api/*.launch
+backend-api/.settings/
+backend-api/*.sublime-workspace
+
+# IDE - VSCode
+backend-api/.vscode/*
+backend-api/!.vscode/settings.json
+backend-api/!.vscode/tasks.json
+backend-api/!.vscode/launch.json
+backend-api/!.vscode/extensions.json
+
+backend-api/.env
