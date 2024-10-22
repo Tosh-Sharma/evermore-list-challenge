@@ -5,27 +5,59 @@ import { Card, CardContent, Typography, IconButton, Tooltip, Button } from '@mui
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 import { Priority, State } from '../../constants/constants';
+import { useDeleteTask, useUpdateTask } from '../../hooks/task.hooks';
 import { useThemeContext } from '../../app/ThemeContext';
 import { priorityIcons } from '../PriorityIcons';
 import TaskModal from '../CardCreation';
+import ConfirmDeleteModal from './ConfirmDeleteModal';
 
 interface ListCardProps {
   name: string;
   description: string;
   priority: Priority;
   state: State;
+  id: number;
 }
 
-const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state }) => {
+const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state, id }) => {
+  const { darkMode } = useThemeContext();
   const [modalOpen, setModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const { mutate: deleteTask, isLoading: deleting } = useDeleteTask();
+  const { mutate: updateTask, isLoading: updating, error: updateError } = useUpdateTask();
 
   const handleEditClick = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
-  const { darkMode } = useThemeContext();
+  const handleDeleteModalClose = () => setDeleteModalOpen(false);
 
-  const handleDeleteClick = () => {
-    // Handle delete logic here
+  const getNextState = (currentState: State): State => {
+    switch (currentState) {
+      case 'TO_DO':
+        return 'IN_PROGRESS' as State.InProgress;
+      case 'IN_PROGRESS':
+        return 'DONE' as State.Done;
+      case 'DONE':
+        return 'BLOCKED' as State.Blocked;
+      case 'BLOCKED':
+        return 'CANCELLED' as State.Cancelled;
+      case 'CANCELLED':
+        return 'TO_DO' as State.ToDo;
+      default:
+        return 'TO_DO' as State.ToDo;
+    }
   };
+
+  const handleStateTransition = () => {
+    if (id) {
+      const nextState = getNextState(state);
+      console.log('getNextState ', getNextState);
+      updateTask({ id, updateTaskDto: { state: nextState } });
+    }
+  };
+
+  if (deleting) {
+    return 'Deleting...';
+  }
 
   const cardContainerStyle = css`
     margin: 5px;
@@ -52,6 +84,7 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state 
     display: flex;
     align-items: center;
     flex-direction: row;
+    padding-left: 60px;
   `;
 
   const iconButtonStyle = css`
@@ -79,19 +112,28 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state 
             <EditIcon />
           </IconButton>
         </Header>
-        <Typography variant="body2" color="text.secondary">
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{
+            paddingTop: 1,
+            paddingLeft: 8,
+          }}
+        >
           {description}
         </Typography>
         <State>
           <Typography variant="body2" color="text.secondary">
             State
           </Typography>
-          <Button variant="text">{state}</Button>
+          <Button variant="text" onClick={handleStateTransition}>
+            {updating ? 'Updating...' : state}
+          </Button>
         </State>
       </CardContent>
       <IconButton
         aria-label="delete"
-        onClick={handleDeleteClick}
+        onClick={() => setDeleteModalOpen(true)}
         sx={css`
           position: absolute;
           bottom: 16px;
@@ -105,11 +147,18 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state 
         open={modalOpen}
         handleClose={handleClose}
         initialData={{
+          id,
           name,
           description,
           priority,
           state,
         }}
+      />
+      <ConfirmDeleteModal
+        id={id}
+        deleteTask={deleteTask}
+        handleModalClose={handleDeleteModalClose}
+        open={deleteModalOpen}
       />
     </Card>
   );

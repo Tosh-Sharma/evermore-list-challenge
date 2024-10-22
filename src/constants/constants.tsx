@@ -1,23 +1,23 @@
 export const priorityOrder = {
-  Highest: 5,
-  High: 4,
-  Medium: 3,
-  Low: 2,
-  Lowest: 1,
+  HIGHEST: 5,
+  HIGH: 4,
+  MEDIUM: 3,
+  LOW: 2,
+  LOWEST: 1,
 };
 
 export enum Priority {
-  Lowest = 'Lowest',
-  Low = 'Low',
-  Medium = 'Medium',
-  High = 'High',
-  Highest = 'Highest',
+  LOWEST = 'LOWEST',
+  LOW = 'LOW',
+  MEDIUM = 'MEDIUM',
+  HIGH = 'HIGH',
+  HIGHEST = 'HIGHEST',
 }
 
 export enum State {
-  ToDo = 'To-Do',
-  InProgress = 'In Progress',
-  Done = 'Done',
-  Canceled = 'Canceled',
-  Blocked = 'Blocked',
+  ToDo = 'TO_DO',
+  InProgress = 'IN_PROGRESS',
+  Done = 'DONE',
+  Cancelled = 'CANCELLED',
+  Blocked = 'BLOCKED',
 }

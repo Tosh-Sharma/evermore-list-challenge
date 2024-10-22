@@ -27,14 +27,14 @@ enum TaskPriority {
 }
 
 model Task {
-  id          Int         @id @default(autoincrement())
-  name        String
-  description String
-  state       TaskState
-  priority    TaskPriority
+  id          Int           @id @default(autoincrement())
+  name        String        @default("")
+  description String        @default("")
+  state       TaskState     @default(TO_DO)
+  priority    TaskPriority  @default(LOWEST)
   list_id     Int
-  list        List        @relation(fields: [list_id], references: [id])
-  createdAt   DateTime    @default(now())
+  list        List          @relation(fields: [list_id], references: [id])
+  createdAt   DateTime      @default(now())
 }
 
 model List {

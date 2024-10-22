@@ -8,19 +8,33 @@ export class TaskService {
   constructor(private readonly prisma: PrismaService) {}
 
   async create(createTaskDto: CreateTaskDto) {
+    const state = (() => {
+      if (createTaskDto.state || createTaskDto.state.trim().length === 0)
+        return 'TO_DO';
+      return createTaskDto.state;
+    })();
+    const priority = (() => {
+      if (createTaskDto.priority || createTaskDto.priority.trim().length === 0)
+        return 'LOWEST';
+      return createTaskDto.priority;
+    })();
     await this.prisma.task.create({
       data: {
         name: createTaskDto.name,
         description: createTaskDto.description,
-        state: createTaskDto.state,
-        priority: createTaskDto.priority,
+        state: state,
+        priority: priority,
         list_id: createTaskDto.list_id || 1,
       },
     });
   }
 
   async findAll() {
-    return this.prisma.task.findMany();
+    return this.prisma.task.findMany({
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
   }
 
   async findOne(id: number) {

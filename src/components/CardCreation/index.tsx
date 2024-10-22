@@ -14,12 +14,16 @@ import {
 import { css } from '@emotion/react';
 import { Priority, State } from '../../constants/constants';
 import { priorityIcons } from '../PriorityIcons';
+import { useCreateTask, useUpdateTask } from '../../hooks/task.hooks';
+import { CreateTaskDto } from '../../dto/create-task.dto';
+import { UpdateTaskDto } from '../../dto/update-task.dto';
 
 interface TaskModalProps {
   open: boolean;
   handleClose: () => void;
   mode: 'create' | 'edit';
   initialData?: {
+    id?: number;
     name: string;
     description: string;
     state: State;
@@ -28,10 +32,13 @@ interface TaskModalProps {
 }
 
 const TaskModal = ({ open, handleClose, mode, initialData }: TaskModalProps) => {
+  const buttonText = mode === 'create' ? 'Create' : 'Edit';
   const [name, setName] = useState('');
   const [description, setDescription] = useState('');
   const [state, setState] = useState<State | ''>('');
   const [priority, setPriority] = useState<Priority | ''>('');
+  const { mutate: createTask, isLoading: creating } = useCreateTask();
+  const { mutate: updateTask, isLoading: updating } = useUpdateTask();
 
   useEffect(() => {
     if (mode === 'edit' && initialData) {
@@ -42,9 +49,39 @@ const TaskModal = ({ open, handleClose, mode, initialData }: TaskModalProps) => 
     }
   }, [mode, initialData]);
 
-  const handleSubmit = () => {
-    console.log({ name, description, state, priority });
-    handleClose();
+  const handleSubmit = async () => {
+    if (mode === 'create') {
+      const newTask: CreateTaskDto = {
+        name,
+        description,
+        state: state as State,
+        priority: priority as Priority,
+        list_id: 1, // Replace with actual list_id if needed
+      };
+      try {
+        createTask(newTask);
+        setName('');
+        setDescription('');
+        setState('');
+        setPriority('');
+        handleClose();
+      } catch (error) {
+        console.error('Error creating task:', error);
+      }
+    } else if (mode === 'edit' && initialData?.id) {
+      const updatedTask: UpdateTaskDto = {
+        name,
+        description,
+        state: state as State,
+        priority: priority as Priority,
+      };
+      try {
+        updateTask({ id: initialData.id, updateTaskDto: updatedTask });
+        handleClose();
+      } catch (error) {
+        console.error('Error updating task:', error);
+      }
+    }
   };
 
   const iconButtonStyle = (selected: boolean) => css`
@@ -94,7 +131,7 @@ const TaskModal = ({ open, handleClose, mode, initialData }: TaskModalProps) => 
           >
             <MenuItem value={State.ToDo}>To Do</MenuItem>
             <MenuItem value={State.InProgress}>In Progress</MenuItem>
-            <MenuItem value={State.Canceled}>Canceled</MenuItem>
+            <MenuItem value={State.Cancelled}>Cancelled</MenuItem>
             <MenuItem value={State.Blocked}>Blocked</MenuItem>
             <MenuItem value={State.Done}>Done</MenuItem>
           </Select>
@@ -102,39 +139,44 @@ const TaskModal = ({ open, handleClose, mode, initialData }: TaskModalProps) => 
         <p>Priority</p>
         <Box sx={{ display: 'flex', justifyContent: 'space-around', marginTop: 2 }}>
           <IconButton
-            onClick={() => setPriority(Priority.Highest)}
-            css={iconButtonStyle(priority === Priority.Highest)}
+            onClick={() => setPriority(Priority.HIGHEST)}
+            css={iconButtonStyle(priority === Priority.HIGHEST)}
           >
-            {priorityIcons.Highest}
+            {priorityIcons.HIGHEST}
           </IconButton>
           <IconButton
-            onClick={() => setPriority(Priority.High)}
-            css={iconButtonStyle(priority === Priority.High)}
+            onClick={() => setPriority(Priority.HIGH)}
+            css={iconButtonStyle(priority === Priority.HIGH)}
           >
-            {priorityIcons.High}
+            {priorityIcons.HIGH}
           </IconButton>
           <IconButton
-            onClick={() => setPriority(Priority.Medium)}
-            css={iconButtonStyle(priority === Priority.Medium)}
+            onClick={() => setPriority(Priority.MEDIUM)}
+            css={iconButtonStyle(priority === Priority.MEDIUM)}
           >
-            {priorityIcons.Medium}
+            {priorityIcons.MEDIUM}
           </IconButton>
           <IconButton
-            onClick={() => setPriority(Priority.Low)}
-            css={iconButtonStyle(priority === Priority.Low)}
+            onClick={() => setPriority(Priority.LOW)}
+            css={iconButtonStyle(priority === Priority.LOW)}
           >
-            {priorityIcons.Low}
+            {priorityIcons.LOW}
           </IconButton>
           <IconButton
-            onClick={() => setPriority(Priority.Lowest)}
-            css={iconButtonStyle(priority === Priority.Lowest)}
+            onClick={() => setPriority(Priority.LOWEST)}
+            css={iconButtonStyle(priority === Priority.LOWEST)}
           >
-            {priorityIcons.Lowest}
+            {priorityIcons.LOWEST}
           </IconButton>
         </Box>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', marginTop: 4 }}>
-          <Button variant="contained" color="primary" onClick={handleSubmit}>
-            Submit
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleSubmit}
+            disabled={creating || updating || name.trim() === '' || priority === ''}
+          >
+            {creating || updating ? 'Submitting...' : `${buttonText}`}
           </Button>
           <Button variant="outlined" onClick={handleClose}>
             Cancel

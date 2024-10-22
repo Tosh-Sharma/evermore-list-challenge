@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import {
-  MenuItem,
-  IconButton,
-  Menu,
-  Modal,
-  Box,
-  FormControlLabel,
-  Checkbox,
-  Button,
-} from '@mui/material';
+import { MenuItem, IconButton, Menu } from '@mui/material';
 import { FilterAlt, Sort } from '@mui/icons-material';
-
-import todoList from '../app/todoList';
+import { useGetAllTasks } from '../hooks/task.hooks';
 import { Priority, priorityOrder, State } from '../constants/constants';
 import ListCard from './ListCard';
 import StateFilter from './StateFilter';
@@ -25,6 +15,7 @@ interface ITask {
 }
 
 const TaskList: React.FC = () => {
+  const { data: tasks, isLoading: loading, error } = useGetAllTasks();
   const loadSortMethod = () => {
     return localStorage.getItem('sortMethod') || 'priorityAsc';
   };
@@ -37,7 +28,7 @@ const TaskList: React.FC = () => {
     const savedFilters = localStorage.getItem('filterChoices');
     return savedFilters
       ? JSON.parse(savedFilters)
-      : [State.ToDo, State.InProgress, State.Canceled, State.Blocked];
+      : [State.ToDo, State.InProgress, State.Cancelled, State.Blocked];
   };
 
   const saveFilterChoices = (choices: State[]) => {
@@ -45,7 +36,7 @@ const TaskList: React.FC = () => {
   };
 
   const [sortMethod, setSortMethod] = useState(loadSortMethod());
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [filterModalOpen, setFilterModalOpen] = useState(false);
   const [selectedStates, setSelectedStates] = useState<State[]>(loadFilterChoices());
   const open = Boolean(anchorEl);
@@ -85,14 +76,17 @@ const TaskList: React.FC = () => {
     });
   };
 
+  if (loading) return <p>Loading tasks...</p>;
+
   const allTasksDone = 'All tasks are Done!';
-  const filteredTasks = todoList.filter(
-    (task) => selectedStates.length === 0 || selectedStates.includes(task.state)
-  );
+  const filteredTasks = tasks?.filter((task) => {
+    return selectedStates.length === 0 || selectedStates.includes(task.state);
+  });
 
-  if (filteredTasks.length === 0) return <p>{allTasksDone}</p>;
+  if (filteredTasks?.length === 0) return <p>{allTasksDone}</p>;
 
-  const sortTasks = (tasks: ITask[]) => {
+  const sortTasks = (tasks: ITask[] | undefined) => {
+    if (!tasks) return [];
     switch (sortMethod) {
       case 'priorityAsc':
         return tasks.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
@@ -102,12 +96,17 @@ const TaskList: React.FC = () => {
         return tasks.sort((a, b) => a.name.localeCompare(b.name));
       case 'nameDesc':
         return tasks.sort((a, b) => b.name.localeCompare(a.name));
+      case 'default':
+        return tasks;
       default:
         return tasks;
     }
   };
 
   const sortedTasks = sortTasks(filteredTasks);
+
+  if (loading) return <p>Loading tasks...</p>;
+  if (error) return <p>Error loading tasks: {error.message}</p>;
 
   return (
     <div>
@@ -142,6 +141,7 @@ const TaskList: React.FC = () => {
           </MenuItem>
           <MenuItem onClick={() => handleMenuItemClick('nameAsc')}>Name Ascending</MenuItem>
           <MenuItem onClick={() => handleMenuItemClick('nameDesc')}>Name Descending</MenuItem>
+          <MenuItem onClick={() => handleMenuItemClick('default')}>Default</MenuItem>
         </Menu>
         <IconButton onClick={handleFilterIconClick}>
           <FilterAlt />
@@ -156,6 +156,7 @@ const TaskList: React.FC = () => {
       {sortedTasks.map((task) => (
         <ListCard
           key={task.id}
+          id={task.id}
           name={task.name}
           description={task.description}
           state={task.state}

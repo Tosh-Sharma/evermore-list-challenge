@@ -4,6 +4,8 @@ import {
   Brightness4 as Brightness4Icon,
   Brightness7 as Brightness7Icon,
 } from '@mui/icons-material';
+import { QueryClient, QueryClientProvider } from 'react-query';
+
 import TaskList from '../components/TaskList';
 import { ThemeProvider, useThemeContext } from './ThemeContext';
 import TaskModal from '../components/CardCreation';
@@ -62,9 +64,13 @@ const AppContent = () => {
 };
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
     <ThemeProvider>
-      <AppContent />
+      <QueryClientProvider client={queryClient}>
+        <AppContent />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

@@ -27,9 +27,9 @@ const IconPriority = {
 };
 
 export const priorityIcons = {
-  Lowest: <LowestPriority sx={IconPriority.lowest} />,
-  Low: <LowPriority sx={IconPriority.low} />,
-  Medium: <MediumPriority sx={IconPriority.medium} />,
-  High: <HighPriority sx={IconPriority.high} />,
-  Highest: <HighestPriority sx={IconPriority.highest} />,
+  LOWEST: <LowestPriority sx={IconPriority.lowest} />,
+  LOW: <LowPriority sx={IconPriority.low} />,
+  MEDIUM: <MediumPriority sx={IconPriority.medium} />,
+  HIGH: <HighPriority sx={IconPriority.high} />,
+  HIGHEST: <HighestPriority sx={IconPriority.highest} />,
 };
