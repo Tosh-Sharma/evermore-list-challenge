@@ -1,6 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit';
 import type { PayloadAction } from '@reduxjs/toolkit';
-import type { RootState } from './store';
 
 const initialState: unknown = {};
 
@@ -9,12 +8,13 @@ const todosSlice = createSlice({
   initialState,
   reducers: {
     test: (state, action: PayloadAction<void>) => {
-      console.log('action');
+      console.log('action is ', action);
+      console.log('state before', state);
     },
   },
 });
 
 export const actions = todosSlice.actions;
-export const selectTest = (state: RootState) => undefined;
+export const selectTest = () => undefined;
 
 export default todosSlice.reducer;

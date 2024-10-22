@@ -14,8 +14,7 @@ export class TaskService {
       return createTaskDto.state;
     })();
     const priority = (() => {
-      if (createTaskDto.priority || createTaskDto.priority.trim().length === 0)
-        return 'LOWEST';
+      if (createTaskDto.priority.trim().length === 0) return 'LOWEST';
       return createTaskDto.priority;
     })();
     await this.prisma.task.create({

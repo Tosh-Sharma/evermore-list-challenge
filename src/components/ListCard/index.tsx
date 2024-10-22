@@ -24,7 +24,7 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state,
   const [modalOpen, setModalOpen] = useState(false);
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const { mutate: deleteTask, isLoading: deleting } = useDeleteTask();
-  const { mutate: updateTask, isLoading: updating, error: updateError } = useUpdateTask();
+  const { mutate: updateTask, isLoading: updating } = useUpdateTask();
 
   const handleEditClick = () => setModalOpen(true);
   const handleClose = () => setModalOpen(false);
@@ -50,7 +50,6 @@ const ListCard: React.FC<ListCardProps> = ({ name, description, priority, state,
   const handleStateTransition = () => {
     if (id) {
       const nextState = getNextState(state);
-      console.log('getNextState ', getNextState);
       updateTask({ id, updateTaskDto: { state: nextState } });
     }
   };
